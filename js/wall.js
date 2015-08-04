@@ -70,7 +70,7 @@ Wall = window.Wall = function(containerSelecter, repo, columnTags) {
 							_.collect(issue.labels, function(it) { return it.name; }));
 				}
 				cols[tag].append(sanchez.template('issue', {
-					url:issue.url, title:issue.title,
+					url:issue.html_url, title:issue.title,
 					body:issue.body.chop(80),
 					'user.avatar_url':issue.user.avatar_url } ));
 			});
