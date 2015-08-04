@@ -17,11 +17,29 @@
 		<script src="html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+
+	<style>
+		td { vertical-align:top; }
+		.issue .media-body { vertical-align:middle; }
+		.avatar {
+			width: 48px;
+			height: 48px;
+			border-radius: 24px;
+			-webkit-border-radius: 24px;
+			-moz-border-radius: 24px;
+			margin: 7px;
+			background: url(http://link-to-your/image.jpg) no-repeat;
+			box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+			-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+			-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+		}
+	</style>
 </head>
 <body>
-	<h1>Wall</h1>
-
-	<div id="wall-container"></div>
+	<div id="wall-container" class="panel panel-default">
+		<div class="panel-heading"></div>
+		<div class="panel-body"></div>
+	</div>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="jquery/1.11.3/jquery.min.js"></script>
@@ -29,6 +47,7 @@
 	<script src="bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script src="lodash-compat/3.10.1/lodash.min.js"></script>
 	<script src="js/string.js"></script>
+	<script src="js/sanchez.js"></script>
 	<script src="js/wall.js"></script>
 	<script>
 		new Wall('#wall-container', 'medic/medic-webapp', [
@@ -36,6 +55,25 @@
 				'2 - Active Work',
 				'3 - Acceptance testing',
 				['4 - Ready', '5 - Released'] ]);
+	</script>
+
+	<script id="issue" type="text/x-sanchez-template">
+		<div class="issue media">
+			<div class="media-left">
+				<a href="{{user.url}}">
+					<img class="avatar media-object" src="{{user.avatar_url}}" alt="{{user.login}}">
+				</a>
+			</div>
+			<div class="media-body">
+				<a href="{{http_url}}">
+					<h4 class="media-heading">{{title}}</h4>
+				</a>
+			</div>
+		</div>
+	</script>
+
+	<script id="table" type="text/x-sanchez-template">
+		<table class="table"><thead><tr/></thead><tbody><tr/></tbody></table>
 	</script>
 </body>
 </html>

@@ -7,3 +7,9 @@ if(!String.prototype.format) {
 		});
 	};
 }
+if(!String.prototype.chop) {
+	String.prototype.chop = function(maxLength) {
+		if(this.legnth <= maxLength) return this;
+		return this.substring(0, maxLength-1) + '…';
+	};
+}

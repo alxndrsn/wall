@@ -47,7 +47,7 @@ Wall = window.Wall = function(containerSelecter, repo, columnTags) {
 		};
 		this.addAll = function(issues) { _.forEach(issues, this.add); };
 		this.getElement = function() {
-			var e = $('<table><thead><tr/></thead><tbody><tr/></tbody></table>'),
+			var e = $(sanchez.template('table')),
 			    headRow = e.find('thead tr'),
 			    bodyRow = e.find('tbody tr'),
 			    cols = {};
@@ -57,7 +57,8 @@ Wall = window.Wall = function(containerSelecter, repo, columnTags) {
 				var tag = getPrimaryTag(tagGroup),
 				    col = cols[tag] = $('<td class="{0}">'.
 						format(tagGroup.join(' ')));
-				headRow.append('<td>{0}</td>'.format(tagGroup.join(', ')));
+				headRow.append('<th class="col-md-{1}">{0}</td>'.format(
+					tagGroup.join(', '), 12/columnTags.length));
 				bodyRow.append(col);
 			});
 
@@ -68,9 +69,10 @@ Wall = window.Wall = function(containerSelecter, repo, columnTags) {
 					return log('Ignoring issue: #{0} [{1}]', issue.number,
 							_.collect(issue.labels, function(it) { return it.name; }));
 				}
-				cols[tag].append(
-					'<div><a href="{0}">{1}</a></div>'.format(
-						issue.html_url, issue.title));
+				cols[tag].append(sanchez.template('issue', {
+					url:issue.url, title:issue.title,
+					body:issue.body.chop(80),
+					'user.avatar_url':issue.user.avatar_url } ));
 			});
 
 			return e;
