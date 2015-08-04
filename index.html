@@ -36,9 +36,10 @@
 	</style>
 </head>
 <body>
-	<div id="wall-container" class="panel panel-default">
+	<div class="panel panel-default">
 		<div class="panel-heading"></div>
 		<div class="panel-body"></div>
+		<div id="wall-placeholder"></div>
 	</div>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -49,13 +50,6 @@
 	<script src="js/string.js"></script>
 	<script src="js/sanchez.js"></script>
 	<script src="js/wall.js"></script>
-	<script>
-		new Wall('#wall-container', 'medic/medic-webapp', [
-				['0 - Backlog', '1 - Scheduled'],
-				'2 - Active Work',
-				'3 - Acceptance testing',
-				['4 - Ready', '5 - Released'] ]);
-	</script>
 
 	<script id="issue" type="text/x-sanchez-template">
 		<div class="issue media">
@@ -74,6 +68,20 @@
 
 	<script id="table" type="text/x-sanchez-template">
 		<table class="table"><thead><tr/></thead><tbody><tr/></tbody></table>
+	</script>
+
+	<script id="column-header" type="text/x-sanchez-template">
+		<th class="col-md-{{columns}}">
+			{{heading}} <span class="badge">0</span>
+		</th>
+	</script>
+
+	<script>
+		new Wall('#wall-placeholder', 'medic/medic-webapp', [
+				'1 - Scheduled',
+				'2 - Active Work',
+				'3 - Acceptance testing',
+				'4 - Ready' ]);
 	</script>
 </body>
 </html>
