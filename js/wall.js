@@ -5,17 +5,6 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags) {
 				args[0], Array.prototype.slice.call(args, 1)); },
 	log = function() { console.log('LOG | ' + format(arguments)); },
 	err = function() { console.err('ERR | ' + format(arguments)); },
-	github = {
-		API: 'https://api.github.com/',
-		get: function(path, success, data) {
-			$.ajax(github.API + path, {
-				data:data, success:success,
-				error: function(req, status, error) {
-					err('[{0} -> {1}] {2}', path, status, error);
-				},
-			});
-		},
-	},
 	withIssues = function(success) {
 		var path = 'repos/{0}/issues'.format(repo);
 		// Do a separate request for each label we are interested in -

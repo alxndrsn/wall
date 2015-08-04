@@ -37,8 +37,13 @@
 </head>
 <body>
 	<div class="panel panel-default">
-		<div class="panel-heading"></div>
-		<div class="panel-body"></div>
+		<div class="panel-heading">Wall for <span class="repo-name"></span></div>
+		<div class="panel-body">
+			<div style="display:none" class="github-api alert alert-warning" role="alert">
+				Your <a href="https://api.github.com/rate_limit">github API allowance</a> is running low...</div>
+			<div style="display:none" class="github-api alert alert-danger" role="alert">
+				Your <a href="https://api.github.com/rate_limit">github API allowance</a> has run out!</div>
+		</div>
 		<div id="wall-placeholder"></div>
 	</div>
 
@@ -49,6 +54,7 @@
 	<script src="lodash-compat/3.10.1/lodash.min.js"></script>
 	<script src="js/string.js"></script>
 	<script src="js/sanchez.js"></script>
+	<script src="js/github.js"></script>
 	<script src="js/wall.js"></script>
 
 	<script id="issue" type="text/x-sanchez-template">
@@ -76,12 +82,26 @@
 		</th>
 	</script>
 
+	<script id="repo-name-link" type="text/x-sanchez-template">
+		<a class="repo-name" href="http://www.github.com/{{repo}}">{{repo}}</a>
+	</script>
+
 	<script>
-		new Wall('#wall-placeholder', 'medic/medic-webapp', [
+		var repo = 'medic/medic-webapp';
+		sanchez.replace('.panel-heading .repo-name', 'repo-name-link', { repo:repo });
+		new Wall('#wall-placeholder', repo, [
 				'1 - Scheduled',
 				'2 - Active Work',
 				'3 - Acceptance testing',
 				'4 - Ready' ]);
+		github.api_usage(function(usage) {
+			var remaining = usage.rate.remaining;
+			if(remaining < 4) {
+				$('.github-api.alert-danger').show(200);
+			} else if(remaining < 20) {
+				$('.github-api.alert-warning').show(200);
+			}
+		});
 	</script>
 </body>
 </html>
