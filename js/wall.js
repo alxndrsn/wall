@@ -49,7 +49,7 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags) {
 
 		this.add = function(issue) {
 			log('Table.add() :: issue = #{0}', issue.number);
-			var tag = getPrimaryTag(issue), count, counter;
+			var tag = getPrimaryTag(issue), count, counter, user;
 			if(!tag) {
 				return log('Ignoring issue: #{0} [{1}]', issue.number,
 						_.collect(issue.labels, function(it) { return it.name; }));
@@ -63,10 +63,11 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags) {
 			if(count >= 100) count = '100+';
 			counter.text(count);
 
+			user = issue.assignee || { url:'#', avatar_url:'blank.gif' };
 			cols[tag].append(sanchez.template('issue', {
 				url:issue.html_url, title:issue.title,
-				body:issue.body.chop(80),
-				'user.avatar_url':issue.user.avatar_url } ));
+				'user.avatar_url':user.avatar_url,
+				'user.url':user.html_url } ));
 		};
 		this.addAll = function(issues) { _.forEach(issues, self.add); };
 		this.getElement = function() { return element; };
