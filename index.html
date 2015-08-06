@@ -34,6 +34,7 @@
 			-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 		}
 	</style>
+	<link rel="shortcut icon" href="http://www.medicmobile.org/favicon.ico" id="favicon"></link>
 </head>
 <body>
 	<div class="panel panel-default">
@@ -92,14 +93,18 @@
 			var parts = p.split('=');
 			params[parts[0]] = parts[1];
 		});
+
+		if(params.favicon) $('#favicon').attr('href', params.favicon);
+
 		repo = params.repo || 'medic/medic-webapp';
-		console.log('Parsing JSON: ' + decodeURIComponent(params.cols));
+		sanchez.replace('.panel-heading .repo-name', 'repo-name-link', { repo:repo });
+
 		cols = params.cols ? JSON.parse(decodeURIComponent(params.cols)) : [
 				'1 - Scheduled',
 				'2 - Active Work',
 				'3 - Acceptance testing',
 				'4 - Ready' ];
-		sanchez.replace('.panel-heading .repo-name', 'repo-name-link', { repo:repo });
+
 		new Wall('#wall-placeholder', repo, cols);
 		github.api_usage(function(usage) {
 			var remaining = usage.rate.remaining;
