@@ -38,8 +38,9 @@
 </head>
 <body>
 	<div class="panel panel-default">
-		<div class="panel-heading">Wall for <span class="repo-name"></span></div>
 		<div class="panel-body">
+			<div id="repo-name-placeholder"></div>
+
 			<div style="display:none" class="github-api alert alert-warning" role="alert">
 				Your <a href="https://api.github.com/rate_limit">github API allowance</a> is running low...</div>
 			<div style="display:none" class="github-api alert alert-danger" role="alert">
@@ -83,37 +84,60 @@
 		</th>
 	</script>
 
-	<script id="repo-name-link" type="text/x-sanchez-template">
-		<a class="repo-name" href="http://www.github.com/{{repo}}/issues">{{repo}}</a>
+	<script id="repo-name" type="text/x-sanchez-template">
+		<div class="form-inline">
+			<div class="form-group">
+				<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+				<div class="input-group">
+					<input disabled type="text" class="form-control" name="repo-name" value="{{repo}}"/>
+					<a class="input-group-addon" href="http://www.github.com/{{repo}}/issues" target="_blank"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a>
+				</div>
+			</div>
+			<input type="hidden" name="cols-json"/>
+		</div>
 	</script>
 
 	<script>
-		var params = {}, repo, cols;
-		location.search.substr(1).split('&').forEach(function(p) {
-			var parts = p.split('=');
-			params[parts[0]] = parts[1];
-		});
+		function initPage() {
+			var params = {}, repo, cols;
+			location.search.substr(1).split('&').forEach(function(p) {
+				var parts = p.split('=');
+				params[parts[0]] = parts[1];
+			});
 
-		if(params.favicon) $('#favicon').attr('href', params.favicon);
+			if(params.favicon) $('#favicon').attr('href', params.favicon);
 
-		repo = params.repo || 'medic/medic-webapp';
-		sanchez.replace('.panel-heading .repo-name', 'repo-name-link', { repo:repo });
+			repo = params.repo || 'medic/medic-webapp';
+			sanchez.replace('#repo-name-placeholder', 'repo-name', { repo:repo });
 
-		cols = params.cols ? JSON.parse(decodeURIComponent(params.cols)) : [
-				'1 - Scheduled',
-				'2 - Active Work',
-				'3 - Acceptance testing',
-				'4 - Ready' ];
+			cols = params.cols ? JSON.parse(decodeURIComponent(params.cols)) : [
+					'1 - Scheduled',
+					'2 - Active Work',
+					'3 - Acceptance testing',
+					'4 - Ready' ];
+			$('input[name=cols-json]').val(JSON.stringify(cols));
+		}
 
-		new Wall('#wall-placeholder', repo, cols);
-		github.api_usage(function(usage) {
-			var remaining = usage.rate.remaining;
-			if(remaining < 4) {
-				$('.github-api.alert-danger').show(200);
-			} else if(remaining < 20) {
-				$('.github-api.alert-warning').show(200);
-			}
-		});
+		function apiCheck() {
+			github.api_usage(function(usage) {
+				var remaining = usage.rate.remaining;
+				if(remaining < 4) {
+					$('.github-api.alert-danger').show(200);
+				} else if(remaining < 20) {
+					$('.github-api.alert-warning').show(200);
+				}
+			});
+		}
+
+		function loadWall() {
+			var
+			cols = JSON.parse($('input[name=cols-json]').val()),
+			repo = $('input[name=repo-name]').val();
+
+			new Wall('#wall-placeholder', repo, cols);
+		}
+
+		initPage(); apiCheck(); loadWall();
 	</script>
 </body>
 </html>
