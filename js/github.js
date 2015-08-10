@@ -12,10 +12,9 @@ github = {
 		});
 	},
 	api_usage: function(success) {
-		var path = 'rate_limit';
-		$.ajax(github.API + path, {
-			success: success,
-			error: github.err(path),
-		});
+		github.get('rate_limit', success);
+	},
+	withMilestonesFor: function(repo, success) {
+		github.get('repos/' + repo + '/milestones', success);
 	},
 };

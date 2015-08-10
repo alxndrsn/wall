@@ -1,4 +1,4 @@
-Wall = window.Wall = function(placeholderSelecter, repo, columnTags) {
+Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) {
 	var ___start_vars___,
 	format = function(args) { args = args.length ? args : arguments;
 		return args.length === 1 ? args[0] : args[0].format.apply(
@@ -10,11 +10,13 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags) {
 		// Do a separate request for each label we are interested in -
 		// the github API doesn't seem happy with labels with spaces
 		_.forEach(_.flatten(columnTags), function(label) {
-			github.get(path, success, {
+			var params = {
 				state: 'all',
 				per_page: 100,
 				labels: label,
-			});
+			};
+			if(milestone) params.milestone = milestone;
+			github.get(path, success, params);
 		});
 	},
 	Table = function(columnTags) {
