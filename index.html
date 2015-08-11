@@ -57,7 +57,7 @@
 						<div class="input-group-btn">
 							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Milestone <span class="caret"></span></button>
 							<ul class="dropdown-menu milestones">
-								<li><a href="#">All</a></li>
+								<li><a href="#" onclick="return selectMilestone()">All</a></li>
 								<li role="separator" class="divider"></li>
 							</ul>
 						</div><!-- /btn-group -->
@@ -114,7 +114,7 @@
 	</script>
 
 	<script id="milestone-li" type="text/x-sanchez-template">
-		<li onclick="selectMilestone({{id}}, '{{title}}')" href="#"><a href="">{{title}}</a></li>
+		<li onclick="return selectMilestone({{id}})" href="#"><a href="">{{title}}</a></li>
 	</script>
 
 	<script id="repo-name-link" type="text/x-sanchez-template">
@@ -132,16 +132,20 @@
 		}
 		return params;
 	}
-	function selectMilestone(number, title) {
+	function selectMilestone(number) {
 		var params = parseParams(), paramString = '?';
-		params.milestone = number;
+
+		if(number) params.milestone = number;
+		else delete params.milestone;
+
 		_.forEach(params, function(val, key) {
 			paramString += encodeURIComponent(key) + '=' +
 					encodeURIComponent(val) + '&'; });
-		$('input[name=milestone]').val(title);
+
 		window.location = window.location.protocol + '//' +
 				window.location.host +
 				window.location.pathname + paramString;
+		return false;
 	}
 	$(function() {
 		var params = parseParams(), repo, cols, milestone;
