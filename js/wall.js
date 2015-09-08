@@ -56,6 +56,7 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 
 			user = issue.assignee || { url:'#', avatar_url:'blank.gif' };
 			cols[tag].append(sanchez.template('issue', {
+				id:issue.number,
 				url:issue.html_url, title:issue.title,
 				'user.avatar_url':user.avatar_url,
 				'user.url':user.html_url } ));

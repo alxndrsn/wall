@@ -20,7 +20,8 @@
 
 	<style>
 		td { vertical-align:top; }
-		.issue .media-body { vertical-align:middle; }
+		.issue .media-body a { vertical-align:middle; color:#333; }
+		.issue .media-body a h4 { color:#337AB7; }
 		.avatar {
 			width: 48px;
 			height: 48px;
@@ -97,7 +98,10 @@
 			</div>
 			<div class="media-body">
 				<a href="{{url}}">
-					<h4 class="media-heading">{{title}}</h4>
+					<h4 class="media-heading">
+						#{{id}}
+					</h4>
+					{{title}}
 				</a>
 			</div>
 		</div>
