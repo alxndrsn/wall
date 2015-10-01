@@ -162,11 +162,11 @@
 		if(isNaN(milestone)) milestone = null;
 
 		cols = params.cols ? JSON.parse(decodeURIComponent(params.cols)) : [
-				'1 - Scheduled',
-				'2 - Active Work',
-				'3 - Code Review',
-				'4 - Acceptance testing',
-				'5 - Ready' ];
+			'1 - Scheduled',
+			'2 - Active Work',
+			'3 - Code Review',
+			'4 - Acceptance testing',
+		];
 
 		github.api_usage(function(usage) {
 			var remaining = usage.rate.remaining;
