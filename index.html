@@ -164,8 +164,9 @@
 		cols = params.cols ? JSON.parse(decodeURIComponent(params.cols)) : [
 				'1 - Scheduled',
 				'2 - Active Work',
-				'3 - Acceptance testing',
-				'4 - Ready' ];
+				'3 - Code Review',
+				'4 - Acceptance testing',
+				'5 - Ready' ];
 
 		github.api_usage(function(usage) {
 			var remaining = usage.rate.remaining;
