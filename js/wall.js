@@ -54,12 +54,13 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 			if(count >= 100) count = '100+';
 			counter.text(count);
 
-			user = issue.assignee || { url:'#', avatar_url:'blank.gif' };
+			user = issue.assignee || { login:'', avatar_url:'blank.gif' };
 			cols[tag].append(sanchez.template('issue', {
+				repo:repo,
 				id:issue.number,
 				url:issue.html_url, title:issue.title,
 				'user.avatar_url':user.avatar_url,
-				'user.url':user.html_url } ));
+				'user.login':user.login } ));
 		};
 		this.addAll = function(issues) { _.forEach(issues, self.add); };
 		this.getElement = function() { return element; };
