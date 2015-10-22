@@ -6,15 +6,15 @@ github = {
 		}
 	},
 	get: function(path, success, data) {
-		$.ajax(github.API + path, {
+		return $.ajax(github.API + path, {
 			data:data, success:success,
 			error: github.err(path),
 		});
 	},
 	api_usage: function(success) {
-		github.get('rate_limit', success);
+		return github.get('rate_limit', success);
 	},
 	withMilestonesFor: function(repo, success) {
-		github.get('repos/' + repo + '/milestones', success);
+		return github.get('repos/' + repo + '/milestones', success);
 	},
 };

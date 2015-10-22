@@ -40,6 +40,7 @@
 			-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 		}
 	</style>
+	<style id="assignee-filter"></style>
 	<link rel="shortcut icon" href="http://www.medicmobile.org/favicon.ico" id="favicon"></link>
 </head>
 <body>
@@ -59,6 +60,17 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<form class="navbar-form navbar-right">
+					<div class="input-group">
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Assigned to <span class="caret"></span></button>
+							<ul class="dropdown-menu assignees">
+								<li><a href="#" onclick="return selectAssignee()">Anybody</a></li>
+								<li><a href="#" onclick="return selectAssignee(null)">Nobody</a></li>
+								<li role="separator" class="divider"></li>
+							</ul>
+						</div><!-- /btn-group -->
+						<input type="text" class="form-control" aria-label="assignee" name="assignee" disabled="disabled" value="Anybody"/>
+					</div><!-- /input-group -->
 					<div class="input-group">
 						<div class="input-group-btn">
 							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Milestone <span class="caret"></span></button>
@@ -128,6 +140,10 @@
 		<li onclick="return selectMilestone({{id}})" href="#"><a href="">{{title}}</a></li>
 	</script>
 
+	<script id="assignee-li" type="text/x-sanchez-template">
+		<li onclick="return selectAssignee('{{login}}')" href="#"><a href="">{{name}}</a></li>
+	</script>
+
 	<script id="repo-name-link" type="text/x-sanchez-template">
 		<a class="repo-name" href="http://www.github.com/{{repo}}/issues">{{repo}}</a>
 	</script>
@@ -143,11 +159,8 @@
 		}
 		return params;
 	}
-	function selectMilestone(number) {
-		var params = parseParams(), paramString = '?';
-
-		if(number) params.milestone = number;
-		else delete params.milestone;
+	function updateLocation(params) {
+		var paramString = '?';
 
 		_.forEach(params, function(val, key) {
 			paramString += encodeURIComponent(key) + '=' +
@@ -156,10 +169,39 @@
 		window.location = window.location.protocol + '//' +
 				window.location.host +
 				window.location.pathname + paramString;
+	}
+	function selectAssignee(login) {
+		var $style = $('style#assignee-filter'),
+		    $input = $('input[name=assignee]');
+
+		if(typeof login === 'undefined') {
+			$input.val('Anybody');
+			return $style.text('');
+		}
+		if(!login) {
+			login = '';
+			$input.val('Nobody');
+		} else {
+			$input.val(login);
+		}
+		$style.text('.issue:not([data-assignee="' + login + '"]) {' +
+			'display: none;' +
+		'}');
+
+		return false;
+	}
+	function selectMilestone(number) {
+		var params = parseParams();
+
+		if(number) params.milestone = number;
+		else delete params.milestone;
+
+		updateLocation(params);
 		return false;
 	}
 	$(function() {
-		var params = parseParams(), repo, cols, milestone;
+		var params = parseParams(),
+		    cols, milestone, repo, wall;
 		if(params.favicon) $('#favicon').attr('href', params.favicon);
 
 		repo = params.repo || 'medic/medic-webapp';
@@ -194,7 +236,15 @@
 			});
 		});
 
-		new Wall('#wall-placeholder', repo, cols, milestone);
+		wall = new Wall('#wall-placeholder', repo, cols, milestone);
+
+		wall.loaded
+			.then(function() {
+				_.each(wall.users, function(u) {
+					sanchez.append('ul.assignees', 'assignee-li',
+							{ login:u.login, name:u.login });
+				});
+			});
 	});
 	</script>
 </body>

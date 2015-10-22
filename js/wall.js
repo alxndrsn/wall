@@ -1,22 +1,28 @@
 Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) {
 	var ___start_vars___,
-	format = function(args) { args = args.length ? args : arguments;
-		return args.length === 1 ? args[0] : args[0].format.apply(
-				args[0], Array.prototype.slice.call(args, 1)); },
-	log = function() { console.log('LOG | ' + format(arguments)); },
-	err = function() { console.err('ERR | ' + format(arguments)); },
+	instance = this,
+	log = function() {
+		var args = Array.prototype.slice.call(arguments, 0);
+		args.unshift('LOG');
+		console.log.apply(console, args);
+	},
 	withIssues = function(success) {
-		var path = 'repos/{0}/issues'.format(repo);
+		var promises,
+		    path = 'repos/{0}/issues'.format(repo);
 		// Do a separate request for each label we are interested in -
 		// the github API doesn't seem happy with labels with spaces
-		_.forEach(_.flatten(columnTags), function(label) {
+		promises = _.map(_.flatten(columnTags), function(label) {
 			var params = {
 				state: 'all',
 				per_page: 100,
 				labels: label,
 			};
 			if(milestone) params.milestone = milestone;
-			github.get(path, success, params);
+			return github.get(path, success, params);
+		});
+
+		return new Promise(function(resolve, reject) {
+			$.when.apply($, promises).then(resolve, reject);
 		});
 	},
 	Table = function(columnTags) {
@@ -92,6 +98,24 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 		var table = new Table(columnTags),
 		    placeholder = $(placeholderSelecter);
 		placeholder.replaceWith(table.getElement());
-		withIssues(table.addAll);
+
+		var users = [];
+		var seenLogins = [];
+		instance.loaded =
+			withIssues(function(issues) {
+				var _users;
+				table.addAll(issues);
+				_users = _.pluck(issues, 'assignee');
+				_.each(_users, function(u) {
+					log('Filtering user.', u, seenLogins);
+					if(!u || _.contains(seenLogins, u.login)) return;
+					users.push(u);
+					seenLogins.push(u.login);
+				});
+				log('Users updated for milestone.', users);
+			})
+			.then(function() {
+				instance.users = _.sortBy(users, 'login');
+			});
 	}());
 };
