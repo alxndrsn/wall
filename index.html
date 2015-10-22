@@ -97,7 +97,7 @@
 	<script src="js/wall.js"></script>
 
 	<script id="issue" type="text/x-sanchez-template">
-		<div class="issue media">
+		<div class="issue media" data-assignee="{{user.login}}">
 			<div class="media-left">
 				<a href="http://github.com/{{repo}}/issues?utf8=%E2%9C%93&q=assignee%3A{{user.login}}+">
 					<img class="avatar media-object" src="{{user.avatar_url}}" alt="{{user.login}}">
