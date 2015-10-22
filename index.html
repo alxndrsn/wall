@@ -185,7 +185,6 @@
 		});
 
 		github.withMilestonesFor(repo, function(milestones) {
-			var list = $('ul.milestones');
 			_.forEach(milestones, function(m) {
 				sanchez.append('ul.milestones', 'milestone-li',
 						{ id:m.number, title:m.title });
