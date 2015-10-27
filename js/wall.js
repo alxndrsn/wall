@@ -46,7 +46,8 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 
 		this.add = function(issue) {
 			log('Table.add() :: issue = #{0}', issue.number);
-			var tag = getPrimaryTag(issue), count, counter, user;
+			var tag = getPrimaryTag(issue),
+			    count, counter, labels, user;
 			if(!tag) {
 				return log('Ignoring issue: #{0} [{1}]', issue.number,
 						_.collect(issue.labels, function(it) { return it.name; }));
@@ -61,12 +62,20 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 			counter.text(count);
 
 			user = issue.assignee || { login:'', avatar_url:'blank.gif' };
+			labels = _.map(issue.labels, function(l) {
+					return 'label-' + l.name
+							.replace(/[\s]/g, '_')
+							.replace(/[,\/]/g, '-')
+							.toLowerCase();
+				}).join(' ');
 			cols[tag].append(sanchez.template('issue', {
-				repo:repo,
-				id:issue.number,
-				url:issue.html_url, title:issue.title,
-				'user.avatar_url':user.avatar_url,
-				'user.login':user.login } ));
+				repo: repo,
+				id: issue.number,
+				url: issue.html_url, title:issue.title,
+				'user.avatar_url': user.avatar_url,
+				'user.login': user.login,
+				labels: labels,
+			} ));
 		};
 		this.addAll = function(issues) { _.forEach(issues, self.add); };
 		this.getElement = function() { return element; };
