@@ -68,7 +68,7 @@
 							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Assigned to <span class="caret"></span></button>
 							<ul class="dropdown-menu assignees">
 								<li><a href="#" onclick="return selectAssignee()">Anybody</a></li>
-								<li><a href="#" onclick="return selectAssignee(null)">Nobody</a></li>
+								<li><a href="#" onclick="return selectAssignee('')">Nobody</a></li>
 								<li role="separator" class="divider"></li>
 							</ul>
 						</div><!-- /btn-group -->
@@ -162,27 +162,37 @@
 		}
 		return params;
 	}
-	function updateLocation(params) {
+	function urlFor(params) {
 		var paramString = '?';
 
 		_.forEach(params, function(val, key) {
-			paramString += encodeURIComponent(key) + '=' +
+			if(key) paramString += encodeURIComponent(key) + '=' +
 					encodeURIComponent(val) + '&'; });
 
-		window.location = window.location.protocol + '//' +
+		return window.location.protocol + '//' +
 				window.location.host +
 				window.location.pathname + paramString;
 	}
+	function updateLocation(params) {
+		window.location = urlFor(params);
+	}
 	function selectAssignee(login) {
 		var $style = $('style#assignee-filter'),
-		    $input = $('input[name=assignee]');
+		    $input = $('input[name=assignee]'),
+		    params = parseParams();
 
 		if(typeof login === 'undefined') {
+			delete params.assignee;
+		} else {
+			params.assignee = login;
+		}
+		window.history.pushState(null, '', urlFor(params));
+
+		if(typeof login !== 'string') {
 			$input.val('Anybody');
 			return $style.text('');
 		}
 		if(!login) {
-			login = '';
 			$input.val('Nobody');
 		} else {
 			$input.val(login);
