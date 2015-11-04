@@ -39,11 +39,18 @@
 			-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 			-moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
 		}
-		.label-blocked {
+		.gh-label {
+			border-radius: 2px;
+		}
+		th .gh-label {
+			padding: 6px 10px;
+		}
+		.gh-label-blocked {
 			opacity: 0.5;
 		}
 	</style>
 	<style id="assignee-filter"></style>
+	<style id="gh-label-styles"></style>
 	<link rel="shortcut icon" href="http://www.medicmobile.org/favicon.ico" id="favicon"></link>
 </head>
 <body>
@@ -135,7 +142,7 @@
 
 	<script id="column-header" type="text/x-sanchez-template">
 		<th class="col-md-{{columns}}">
-			{{heading}} <span class="badge">0</span>
+			<span class="gh-label {{labels}}">{{heading}}</span> <span class="badge">0</span>
 		</th>
 	</script>
 
@@ -247,6 +254,15 @@
 					$('input[name=milestone]').val(m.title);
 				}
 			});
+		});
+
+		github.withLabelsFor(repo, function(labels) {
+			var styles = _.map(labels, function(label) {
+				var cssName = label.name.normalise();
+				return '.gh-label.gh-label-{0} { background-color: #{1}; }'
+					.format(cssName, label.color);
+			});
+			$('style#gh-label-styles').text(styles.join('\n'));
 		});
 
 		wall = new Wall('#wall-placeholder', repo, cols, milestone);

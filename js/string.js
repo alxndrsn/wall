@@ -13,3 +13,9 @@ if(!String.prototype.chop) {
 		return this.substring(0, maxLength-1) + '…';
 	};
 }
+
+String.prototype.normalise = function() {
+	return this.toLowerCase()
+		.replace(/[,\/]/g, '-')
+		.replace(/[-\s]/g, '_');
+};

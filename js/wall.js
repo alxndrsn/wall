@@ -63,10 +63,7 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 
 			user = issue.assignee || { login:'', avatar_url:'blank.gif' };
 			labels = _.map(issue.labels, function(l) {
-					return 'label-' + l.name
-							.replace(/[\s]/g, '_')
-							.replace(/[,\/]/g, '-')
-							.toLowerCase();
+					return 'gh-label-' + l.name.normalise();
 				}).join(' ');
 			cols[tag].append(sanchez.template('issue', {
 				repo: repo,
@@ -92,10 +89,15 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 			_.forEach(columnTags, function(tagGroup) {
 				var tag = getPrimaryTag(tagGroup),
 				    col = cols[tag] = $('<td class="{0}">'.
-						format(tagGroup.join(' ')));
+						format(tagGroup.join(' ')))
+				    cssClasses = _.map(tagGroup, function(tag) {
+					    return 'gh-label-' + tag.normalise();
+				    }).join();
 				headRow.append(sanchez.template('column-header', {
-						heading: tagGroup.join(', '),
-						columns: 12/columnTags.length }));
+					columns: 12/columnTags.length,
+					heading: tagGroup.join(', '),
+					labels: cssClasses,
+				}));
 				bodyRow.append(col);
 			});
 		}());
