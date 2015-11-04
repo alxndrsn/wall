@@ -47,7 +47,7 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 		this.add = function(issue) {
 			log('Table.add() :: issue = #{0}', issue.number);
 			var tag = getPrimaryTag(issue),
-			    count, counter, labels, user;
+			    $issue, $issueBody, count, counter, labels, user;
 			if(!tag) {
 				return log('Ignoring issue: #{0} [{1}]', issue.number,
 						_.collect(issue.labels, function(it) { return it.name; }));
@@ -62,17 +62,26 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 			counter.text(count);
 
 			user = issue.assignee || { login:'', avatar_url:'blank.gif' };
-			labels = _.map(issue.labels, function(l) {
+			cssLabels = _.map(issue.labels, function(l) {
 					return 'gh-label-' + l.name.normalise();
-				}).join(' ');
-			cols[tag].append(sanchez.template('issue', {
+				}).join(' '),
+			$issue = $(sanchez.template('issue', {
 				repo: repo,
 				id: issue.number,
 				url: issue.html_url, title:issue.title,
 				'user.avatar_url': user.avatar_url,
 				'user.login': user.login,
-				labels: labels,
+				css_labels: cssLabels,
 			} ));
+			$issueBody = $issue.find('.media-body');
+			_.each(issue.labels, function(l) {
+				if(tag === l.name) return;
+				$issueBody.append(sanchez.template('gh-label', {
+					name: l.name,
+					normalisedName: l.name.normalise(),
+				} ) );
+			} );
+			cols[tag].append($issue);
 		};
 		this.addAll = function(issues) { _.forEach(issues, self.add); };
 		this.getElement = function() { return element; };

@@ -42,6 +42,11 @@
 		.gh-label {
 			border-radius: 2px;
 		}
+		span.gh-label {
+			font-size: 12px;
+			padding: 2px 4px;
+			font-weight: bold;
+		}
 		th .gh-label {
 			padding: 6px 10px;
 		}
@@ -117,6 +122,10 @@
 	<script src="js/sanchez.js"></script>
 	<script src="js/github.js"></script>
 	<script src="js/wall.js"></script>
+
+	<script id="gh-label" type="text/x-sanchez-template">
+		<span class="gh-label gh-label-{{normalisedName}}">{{name}}</span>
+	</script>
 
 	<script id="issue" type="text/x-sanchez-template">
 		<div class="issue media {{labels}}" data-assignee="{{user.login}}">
@@ -274,9 +283,13 @@
 
 		github.withLabelsFor(repo, function(labels) {
 			var styles = _.map(labels, function(label) {
-				var cssName = label.name.normalise();
-				return '.gh-label.gh-label-{0} { background-color: #{1}; }'
-					.format(cssName, label.color);
+				var cssName = label.name.normalise(),
+				    css = '.gh-label.gh-label-{0} { background-color: #{1}; '
+					.format(cssName, label.color)
+				if(isDarkColor(label.color)) {
+					css += 'color: white; ';
+				}
+				return css + '}';
 			});
 			$('style#gh-label-styles').text(styles.join('\n'));
 		});
