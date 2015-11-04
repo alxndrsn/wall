@@ -102,7 +102,7 @@
 				<div style="display:none" class="github-api alert alert-warning" role="alert">
 					Your <a href="https://api.github.com/rate_limit">github API allowance</a> is running low...</div>
 				<div style="display:none" class="github-api alert alert-danger" role="alert">
-					Your <a href="https://api.github.com/rate_limit">github API allowance</a> has run out!</div>
+					Your <a href="https://api.github.com/rate_limit">github API allowance</a> has run out!  Try again in <span id="api-reset-countdown"></span>.</div>
 			</div>
 		</div>
 		<div id="wall-placeholder"></div>
@@ -159,6 +159,15 @@
 	</script>
 
 	<script>
+	function isDarkColor(hexString) {
+		var luminance = 0.299 * hexPair(hexString, 0) +
+				0.587 * hexPair(hexString, 2) +
+				0.114 * hexPair(hexString, 4);
+		return luminance / 255 < 0.5;
+	}
+	function hexPair(hexString, index) {
+		return parseInt(hexString.substr(index, 2), 16);
+	}
 	function parseParams() {
 		var params = {};
 		if(location.search) {
@@ -240,6 +249,13 @@
 		github.api_usage(function(usage) {
 			var remaining = usage.rate.remaining;
 			if(remaining < 4) {
+				var timeLeft = usage.rate.reset - Date.now() / 1000,
+				    countdown = timeLeft <= 60 ?
+						timeLeft + ' seconds' :
+						Math.floor(timeLeft / 60) + ' minutes';
+
+				$('#api-reset-countdown').text(countdown);
+
 				$('.github-api.alert-danger').show(200);
 			} else if(remaining < 20) {
 				$('.github-api.alert-warning').show(200);
