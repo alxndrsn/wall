@@ -79,6 +79,8 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 				$issueBody.append(sanchez.template('gh-label', {
 					name: l.name,
 					normalisedName: l.name.normalise(),
+					urlEncodedName: encodeURIComponent(l.name),
+					repo: repo,
 				} ) );
 			} );
 			cols[tag].append($issue);
