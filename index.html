@@ -123,10 +123,6 @@
 	<script src="js/github.js"></script>
 	<script src="js/wall.js"></script>
 
-	<script id="gh-label" type="text/x-sanchez-template">
-		<a href="https://github.com/{{repo}}/labels/{{urlEncodedName}}" class="gh-label gh-label-{{normalisedName}}">{{name}}</a>
-	</script>
-
 	<script id="issue" type="text/x-sanchez-template">
 		<div class="issue media {{css_labels}}" data-assignee="{{user.login}}">
 			<div class="media-left">
@@ -149,10 +145,8 @@
 		<table class="table"><thead><tr/></thead><tbody><tr/></tbody></table>
 	</script>
 
-	<script id="column-header" type="text/x-sanchez-template">
-		<th class="col-md-{{columns}}">
-			<a class="gh-label {{labels}}">{{heading}}</a> <span class="badge">0</span>
-		</th>
+	<script id="gh-label" type="text/x-sanchez-template">
+		<a href="https://github.com/{{repo}}/labels/{{urlEncodedName}}" class="gh-label gh-label-{{normalisedName}}">{{name}}</a>
 	</script>
 
 	<script id="milestone-li" type="text/x-sanchez-template">

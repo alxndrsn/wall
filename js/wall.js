@@ -6,6 +6,16 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 		args.unshift('LOG');
 		console.log.apply(console, args);
 	},
+	Template = {
+		label: function(label) {
+			return sanchez.template('gh-label', {
+				name: label,
+				normalisedName: label.normalise(),
+				urlEncodedName: encodeURIComponent(label),
+				repo: repo,
+			} );
+		},
+	},
 	withIssues = function(success) {
 		var promises,
 		    path = 'repos/{0}/issues'.format(repo);
@@ -76,12 +86,7 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 			$issueBody = $issue.find('.media-body');
 			_.each(issue.labels, function(l) {
 				if(tag === l.name) return;
-				$issueBody.append(sanchez.template('gh-label', {
-					name: l.name,
-					normalisedName: l.name.normalise(),
-					urlEncodedName: encodeURIComponent(l.name),
-					repo: repo,
-				} ) );
+				$issueBody.append(Template.label(l.name));
 			} );
 			cols[tag].append($issue);
 		};
@@ -100,15 +105,16 @@ Wall = window.Wall = function(placeholderSelecter, repo, columnTags, milestone) 
 			_.forEach(columnTags, function(tagGroup) {
 				var tag = getPrimaryTag(tagGroup),
 				    col = cols[tag] = $('<td class="{0}">'.
-						format(tagGroup.join(' ')))
-				    cssClasses = _.map(tagGroup, function(tag) {
-					    return 'gh-label-' + tag.normalise();
-				    }).join();
-				headRow.append(sanchez.template('column-header', {
-					columns: 12/columnTags.length,
-					heading: tagGroup.join(', '),
-					labels: cssClasses,
-				}));
+						format(tagGroup.join(' '))),
+				    headCol = $('<th class="col-md-{0}">'.
+						format(12/columnTags.length));
+
+				headRow.append(headCol);
+				_.each(tagGroup, function(l) {
+					headCol.append(Template.label(l));
+				});
+				headCol.append('<span class="badge">0</span>');
+
 				bodyRow.append(col);
 			});
 		}());
