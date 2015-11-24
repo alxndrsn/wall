@@ -276,6 +276,12 @@
 					$('input[name=milestone]').val(m.title);
 				}
 			});
+			if(params.milestone === 'latest') {
+				var latestMilestoneNumber = _.max(_.pluck(milestones, 'number'));
+				if(latestMilestoneNumber) {
+					selectMilestone(latestMilestoneNumber);
+				}
+			}
 		});
 
 		github.withLabelsFor(repo, function(labels) {
