@@ -96,6 +96,7 @@
 						</div><!-- /btn-group -->
 						<input type="text" class="form-control" aria-label="milestone" name="milestone" disabled="disabled" value="All"/>
 					</div><!-- /input-group -->
+					<a type="button" class="btn btn-success create-new-issue" target="_blank">New Issue</a>
 				</form>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- /.container-fluid -->
@@ -238,6 +239,8 @@
 
 		repo = params.repo || 'medic/medic-webapp';
 		sanchez.replace('span.repo-name', 'repo-name-link', { repo:repo });
+
+		$('a.create-new-issue').attr('href', 'http://github.com/' + repo + '/issues/new');
 
 		milestone = parseInt(params.milestone, 10);
 		if(isNaN(milestone)) milestone = null;
