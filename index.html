@@ -240,10 +240,10 @@
 		repo = params.repo || 'medic/medic-webapp';
 		sanchez.replace('span.repo-name', 'repo-name-link', { repo:repo });
 
-		$('a.create-new-issue').attr('href', 'http://github.com/' + repo + '/issues/new');
-
 		milestone = parseInt(params.milestone, 10);
 		if(isNaN(milestone)) milestone = null;
+
+		$('a.create-new-issue').attr('href', 'http://github.com/' + repo + '/issues/new?milestone=' + milestone);
 
 		cols = params.cols ? JSON.parse(decodeURIComponent(params.cols)) : [
 			'1 - Scheduled',
