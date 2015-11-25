@@ -252,6 +252,16 @@
 			'4 - Acceptance testing',
 		];
 
+		if(params.milestone === 'latest') {
+			github.withMilestonesFor(repo, function(milestones) {
+				var latestMilestoneNumber = _.max(_.pluck(milestones, 'number'));
+				if(latestMilestoneNumber) {
+					selectMilestone(latestMilestoneNumber);
+				}
+			});
+			return;
+		}
+
 		github.api_usage(function(usage) {
 			var remaining = usage.rate.remaining;
 			if(remaining < 4) {
@@ -276,12 +286,6 @@
 					$('input[name=milestone]').val(m.title);
 				}
 			});
-			if(params.milestone === 'latest') {
-				var latestMilestoneNumber = _.max(_.pluck(milestones, 'number'));
-				if(latestMilestoneNumber) {
-					selectMilestone(latestMilestoneNumber);
-				}
-			}
 		});
 
 		github.withLabelsFor(repo, function(labels) {
